@@ -691,7 +691,7 @@ mapping_error:
 ```
 **Important Note:**
 The code makes a text-based file for each mapped reaction. For a single .csv file containing all the mapped reactions, we suggest
-using combine_out_files.py. (can be found in the https://github.com/ELIFE-ASU/CBRdb/tree/main/atom_tracking)
+using combine_out_files.py. (can be found in the https://github.com/AstroBioReza/Atom_Tracking/edit/main/submit_atom_tracking.sh)
 It is worth noting that the folder for the output and error files can be modified through the shell script.
 
 ### Error Output
@@ -1120,3 +1120,4 @@ After removal: (empty) <=> B  ✗ (SKIPPED)
 - **RDKit:** Open-source cheminformatics toolkit
 - **RXNMapper:** Schwaller, P., et al. (2021). "Extraction of organic chemistry grammar from unsupervised learning of chemical reactions"
 - **localmapper:** Shuan, Chen, et al. (2024). "Precise atom-to-atom mapping for organic reactions via human-in-the-loop machine learning"
+
