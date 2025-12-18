@@ -15,7 +15,7 @@
 
 ---
 ## Overview
-This is an **automated atom mapping system** for chemical reactions. It answers a fundamental question in chemistry: *"Where does a specific atom in a reactant molecule end up after a chemical reaction?"*
+This is an **automated atom mapping approach** for chemical reactions. It answers a fundamental question in chemistry: *"Where does a specific atom in a reactant molecule end up after a chemical reaction?"*
 
 ### Real-World Application
 Imagine you have a reaction like:
@@ -1087,5 +1087,6 @@ After removal: (empty) <=> B  ✗ (SKIPPED)
 - **RDKit:** Open-source cheminformatics toolkit
 - **RXNMapper:** Schwaller, P., et al. (2021). "Extraction of organic chemistry grammar from unsupervised learning of chemical reactions"
 - **localmapper:** Shuan, Chen, et al. (2024). "Precise atom-to-atom mapping for organic reactions via human-in-the-loop machine learning"
+
 
 
