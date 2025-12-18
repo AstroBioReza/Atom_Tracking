@@ -7,8 +7,8 @@
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=htc
 #SBATCH --qos=public
-#SBATCH -o CBRdb/AtomTracking/Logs/out/slurm.%A_%a.out
-#SBATCH -e CBRdb/AtomTracking/Logs/err/slurm.%A_%a.err
+#SBATCH -o [DESIRED_DIRECTORY]/Logs/out/slurm.%A_%a.out
+#SBATCH -e [DESIRED_DIRECTORY]/Logs/err/slurm.%A_%a.err
 #SBATCH --mem=100G
 module conda activate rxn_env
 srun $HOME/.conda/envs/rxn_env/bin/python3.8 CBRdb/AtomTracking(Enhanced).py --row_index ${SLURM_ARRAY_TASK_ID} --dynamic_cofactors 
