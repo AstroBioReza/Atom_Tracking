@@ -14,9 +14,7 @@
 11. [Usage Examples](#usage-examples)
 
 ---
-
 ## Overview
-
 This is an **automated atom mapping system** for chemical reactions. It answers a fundamental question in chemistry: *"Where does a specific atom in a reactant molecule end up after a chemical reaction?"*
 
 ### Real-World Application
@@ -30,7 +28,6 @@ This system can:
 - Track where that exact atom ends up in the products
 - Handle complex reactions with multiple reactants and products
 - Remove "cofactor" molecules that don't participate in the main transformation
-
 ---
 
 ## What This Code Does
@@ -50,7 +47,6 @@ The script processes **one chemical reaction at a time** and performs these task
 It uses **two different atom mapping tools**:
 - **RXNMapper**: Primary AI-based mapper (fast, accurate, but has limits)
 - **localmapper**: Backup for very large reactions that exceed RXNMapper's token limit
-
 ---
 
 ## System Architecture
@@ -151,7 +147,6 @@ C00002,C1=NC(=C2C(=N1)N(C=N2)[C@H]3[C@@H]([C@@H]([C@H](O3)COP(=O)([O-])OP(=O)([O
 ```
 
 **Result:** DataFrames `df_input_reactions` and `df_molecules` are populated.
-
 ---
 
 ### Step 2: Select the Specific Reaction
@@ -165,7 +160,6 @@ raw_reaction = selected_row['reaction']    # e.g., "C00031 + C00002 <=> C00668 +
 ```
 
 **The reason:** The system processes ONE reaction per execution. For batch processing, you'd run the code multiple times (e.g., in parallel using a job scheduler).
-
 ---
 
 ### Step 3: Remove Stoichiometric Coefficients
@@ -182,7 +176,6 @@ After:  C00031 + C00002 <=> C00668 + C00008
 ```
 
 **The reason:** Coefficients like `2`, `n`, `m+1` confuse the atom mapping algorithms. We only care about which molecules participate, not their quantities.
-
 ---
 
 ### Step 4: Parse Reaction Sides
@@ -195,7 +188,6 @@ product_ids = ['C00668', 'C00008', 'C00009']
 ```
 
 **Result:** Two lists of compound IDs representing the left (substrates) and right (products) sides of the reaction.
-
 ---
 
 ### Step 5: Handle Cofactors (Optional)
@@ -227,7 +219,6 @@ After:  2-phosphoglycerate ⇄ phosphoenolpyruvate
 ```
 
 **Safety check:** If removing cofactors would empty either side, the filtering is skipped and marked as `dynamic_skipped`.
-
 ---
 
 ### Step 6: Convert Compound IDs to SMILES
@@ -250,7 +241,6 @@ substrate_smiles = '.'.join([compound_smiles_map['C00031'], ...])
 - `O` = oxygen atom
 - `C(=O)O` = carboxylic acid group (-COOH)
 - `@` = stereochemistry marker (3D orientation)
-
 ---
 
 ### Step 7: Build Canonical Index (First Run Only)
@@ -270,7 +260,6 @@ C00031,"CCO.OCC","OCC","CCO"
 ```
 
 **Note:** If a molecule has multiple fragments (separated by `.`), each fragment gets its own entry.
-
 ---
 
 ### Step 8: Select the Substrate Molecule
@@ -304,7 +293,6 @@ Substrates: [Glucose (C6H12O6), ATP (C10H16N5O13P3)]
 Heavy atoms: [24, 31]
 Selected: ATP (has more heavy atoms)
 ```
-
 ---
 
 ### Step 9: Select the Specific Atom
@@ -337,7 +325,6 @@ Glucose: C-C-C-C-C-C-O
 ```python
 substrate_mols[mol_idx] = label_atom(substrate_mols[mol_idx], atom_idx, 1)
 ```
-
 ---
 
 ### Step 10: Perform Atom Mapping
@@ -375,7 +362,6 @@ Every atom now has a number! Same numbers = same atom across the reaction.
 **Why two mappers?**
 - **RXNMapper**: State-of-the-art, but limited to reactions with <512 tokens (about 30-50 atoms)
 - **localmapper**: Handles larger reactions but may be less accurate
-
 ---
 
 ### Step 11: Track the Atom Through Products
@@ -416,7 +402,6 @@ Atom #1 is in: CH3CHO
 Lookup: CH3CHO → C00084 (acetaldehyde)
 Result: tracking = "C00031 => C00084"
 ```
-
 ---
 
 ### Step 12: Handle Edge Cases
@@ -441,7 +426,6 @@ if not substrate_mols:
     log_and_exit_early("No valid substrate SMILES found", ...)
 ```
 This saves error details to `Error Reactions.csv`.
-
 ---
 
 ### Step 13: Generate Output
@@ -469,7 +453,6 @@ mapping_error:
 - `mapper_used`: Which algorithm performed the mapping
 - `cofactor_handling`: Which cofactor strategy was applied
 - `mapping_error`: Any errors encountered (empty if successful)
-
 ---
 
 ### Step 14: Visualization (Optional)
@@ -484,7 +467,6 @@ visualize_mapped_rxn(mapped_rxns, selected_id, save_images=True)
 - Arrow
 - All product molecules with atoms numbered
 - Color-coded atom correspondences
-
 ---
 
 ## Key Components
@@ -502,7 +484,7 @@ visualize_mapped_rxn(mapped_rxns, selected_id, save_images=True)
 - `atom.SetAtomMapNum()`: Label atoms
 - `Chem.FindMolChiralCenters()`: Find stereogenic centers
 
-### 2. RXNMapper (AI Atom Mapping)
+### 2. RXNMapper (Main Mapping)
 **Technology:** Transformer-based neural network trained on millions of reactions
 
 **How it works:**
@@ -543,7 +525,6 @@ with FileLock(lock_file, timeout=60):
 - Pre-computed canonical forms
 - O(1) hash lookup
 - Stored in `CBRdb_CanonicalIndex.csv`
-
 ---
 
 ## Input Requirements
@@ -575,7 +556,6 @@ The code tries to find the files in:
 1. Same directory as the script
 2. One directory up (`../`)
 3. Two directories up (`../../`)
-
 ---
 
 ## Command-Line Options
@@ -583,7 +563,7 @@ The code tries to find the files in:
 ### Required Arguments
 
 #### `--row_index` (integer)
-**What it does:** Specifies which row (0-indexed) from `CBRdb_R.csv` to process
+Specifies which row (0-indexed) from `CBRdb_R.csv` to process
 
 **Example:**
 ```bash
@@ -594,7 +574,7 @@ python script.py --row_index 42     # Process 43rd reaction
 ### Cofactor Handling Flags
 
 #### `--static_cofactors`
-**What it does:** Removes 51 predefined common cofactors
+Removes 51 predefined common cofactors
 
 **Cofactor list includes:**
 - Energy carriers: ATP, ADP, AMP (C00002, C00008, C00020)
@@ -609,7 +589,7 @@ python script.py --row_index 42     # Process 43rd reaction
 - Tracking main substrate-product relationships
 
 #### `--dynamic_cofactors`
-**What it does:** Removes any compound appearing on BOTH sides of the reaction
+Removes any compound appearing on BOTH sides of the reaction
 
 **Example:**
 ```
@@ -627,7 +607,7 @@ After:  A + B ⇄ C + D
 ### Substrate Selection Flags
 
 #### `--highest_CCC`
-**What it does:** Selects substrate with **most chiral centers**
+Selects substrate with **most chiral centers**
 
 **Example:**
 ```
@@ -644,7 +624,7 @@ Selected: Glucose
 - Focus on complex molecules
 
 #### `--lowest_CCC`
-**What it does:** Selects substrate with **fewest chiral centers**
+Selects substrate with **fewest chiral centers**
 
 **When to use:**
 - Studying simple molecules
@@ -656,7 +636,7 @@ Selected: Glucose
 ### Visualization Flag
 
 #### `--visualize`
-**What it does:** Generates PNG image of the mapped reaction
+Generates PNG image of the mapped reaction
 
 **Output location:** `Reactions Visualizations/[reaction_id].png`
 
@@ -670,7 +650,6 @@ Selected: Glucose
 - Verifying atom mapping accuracy
 - Creating figures for papers/presentations
 - Debugging mapping errors
-
 ---
 
 ## Output Results
@@ -746,7 +725,6 @@ mapper_used: both_failed
 - `static_skipped`: Dynamic filtering would empty a side, reverted to static only
 - `dynamic_skipped`: Dynamic filtering would empty a side, reverted to none
 - `both_skipped`: Both would cause issues, no filtering applied
-
 ---
 
 ## Error Handling
@@ -791,7 +769,6 @@ process_error_reactions_smiles(error_output_file, compound_smiles_map)
 - Reads `Error Reactions.csv`
 - Adds `reaction_smiles` column with full SMILES representation
 - Allows manual inspection of failed reactions in chemical structure format
-
 ---
 
 ## Technical Details
@@ -865,7 +842,6 @@ Alanine: C[C@H](N)C(=O)O
 **Notation:**
 - `@`: Counterclockwise configuration (S)
 - `@@`: Clockwise configuration (R)
-
 ---
 
 ## Usage Examples
@@ -899,7 +875,6 @@ mapped_rxns: [complex SMILES with atom numbers]
 selection_method: highest heavy atom count (default)
 mapper_used: RXNMapper
 ```
-
 ---
 
 ### Example 2: Focusing on Core Transformation
@@ -927,7 +902,6 @@ cofactor_handling: static
 ```
 
 **Result:** Tracks the glucose phosphate transformation, ignoring energy transfer
-
 ---
 
 ### Example 3: Tracking Stereochemistry
@@ -954,7 +928,6 @@ R00011,C00022 + C00010 <=> C00036 + C00011
 tracking: C00010 => C00036
 selection_method: highest chiral center count
 ```
-
 ---
 
 ### Example 4: Large Reaction with Fallback
@@ -977,7 +950,6 @@ python AtomTracking_Enhanced.py --row_index 100
 mapper_used: localmapper_fallback
 mapping_error: 
 ```
-
 ---
 
 ### Example 5: Generating Visualizations
@@ -992,7 +964,6 @@ python AtomTracking_Enhanced.py --row_index 25 --visualize
 - Contains: Color-coded 2D molecular structures with atom numbers
 
 **Use case:** Verify that atom mapping is correct by visual inspection
-
 ---
 
 ### Example 6: Batch Processing (Shell Script)
@@ -1010,7 +981,6 @@ for ($i=0; $i -lt 100; $i++) {
 # Process all reactions in parallel (4 at a time)
 parallel -j 4 python AtomTracking_Enhanced.py --row_index {} --static_cofactors ::: {0..99}
 ```
-
 ---
 
 ### Example 7: Combined Cofactor Strategies
@@ -1029,7 +999,6 @@ python AtomTracking_Enhanced.py --row_index 50 --static_cofactors --dynamic_cofa
 ```
 cofactor_handling: both
 ```
-
 ---
 
 ## Expected Results Summary
@@ -1059,7 +1028,6 @@ cofactor_handling: both
 - Ensure CSV files are in the same directory as script
 - Or in parent directories (../ or ../../)
 - Check file names are exact (case-sensitive on Linux/Mac)
-
 ---
 
 #### Issue 2: "Row index out of bounds"
@@ -1094,7 +1062,6 @@ pip install localmapper
 1. Use `--visualize` to inspect atom mapping
 2. Check if `mapped_rxns` output has numbers
 3. Verify products are in `CBRdb_C.csv`
-
 ---
 
 #### Issue 5: "Dynamic filtering skipped"
@@ -1120,4 +1087,5 @@ After removal: (empty) <=> B  ✗ (SKIPPED)
 - **RDKit:** Open-source cheminformatics toolkit
 - **RXNMapper:** Schwaller, P., et al. (2021). "Extraction of organic chemistry grammar from unsupervised learning of chemical reactions"
 - **localmapper:** Shuan, Chen, et al. (2024). "Precise atom-to-atom mapping for organic reactions via human-in-the-loop machine learning"
+
 
