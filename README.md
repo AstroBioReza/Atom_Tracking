@@ -35,7 +35,7 @@ This system can:
 ### Primary Function
 The script processes **one chemical reaction at a time** and performs these tasks:
 
-1. **Reads a reaction** from a CSV file (like `CBRdb_R.csv`)
+1. **Reads a reaction** from a CSV file (like `Reaction_Database.csv`)
 2. **Converts compound IDs to chemical structures** (SMILES format)
 3. **Selects one substrate molecule** based on your criteria
 4. **Picks a specific atom** in that molecule (usually the most connected one)
@@ -55,8 +55,8 @@ It uses **two different atom mapping tools**:
 ┌─────────────────────────────────────────────────────────────┐
 │                    INPUT DATA FILES                         │
 ├─────────────────────────────────────────────────────────────┤
-│ 1. CBRdb_R.csv       - Reaction equations                	  │
-│ 2. CBRdb_C.csv       - Compound ID → SMILES mapping         │
+│ 1. Reaction_Database.csv     - Reaction equations        	  │
+│ 2. Compound_Database.csv     - Compound ID → SMILES mapping │
 └─────────────────────────────────────────────────────────────┘
                            ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -64,7 +64,7 @@ It uses **two different atom mapping tools**:
 ├─────────────────────────────────────────────────────────────┤
 │ • Remove stoichiometric coefficients (2, n, m+1, etc.)      │
 │ • Build canonical SMILES index for fast lookup              │
-│ • Parse reaction sides (substrates ⇄ products)			  │
+│ • Parse reaction sides (substrates ⇄ products)		      	  │
 └─────────────────────────────────────────────────────────────┘
                            ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -86,7 +86,7 @@ It uses **two different atom mapping tools**:
 ┌─────────────────────────────────────────────────────────────┐
 │                      ATOM SELECTION                         │
 ├─────────────────────────────────────────────────────────────┤
-│ Pick the atom with highest degree (most bonds)              │
+│ Pick the atom with the highest degree (most bonds)          │
 │ Label it with atom map number = 1                           │
 └─────────────────────────────────────────────────────────────┘
                            ↓
@@ -104,7 +104,7 @@ It uses **two different atom mapping tools**:
 │                     ATOM TRACKING                           │
 ├─────────────────────────────────────────────────────────────┤
 │ 1. Find atom #1 in reactants                                │
-│ 2. Look for same number in products                         │
+│ 2. Look for the same number in products                     │
 │ 3. Identify which product molecule contains it              │
 │ 4. Convert back to compound ID                              │
 └─────────────────────────────────────────────────────────────┘
@@ -130,17 +130,17 @@ It uses **two different atom mapping tools**:
 args = parser.parse_args()
 
 # Required files are located
-reactions_file = 'CBRdb_R.csv'             # Contains reaction equations
-molecule_reference_file = 'CBRdb_C.csv'    # Contains compound structures
+reactions_file = 'Reaction_Database.csv'             # Contains reaction equations
+molecule_reference_file = 'Compound_Database.csv'    # Contains compound structures
 ```
 
 **Example data:**
 ```csv
-# CBRdb_R.csv
+# Reaction_Database.csv
 id,reaction
 R00001,C00031 + C00002 <=> C00668 + C00008 + C00009
 
-# CBRdb_C.csv
+# Compound_Database.csv
 compound_id,smiles
 C00031,C(C(=O)O)O[C@H]1[C@@H](C(=O)[O-])O[C@@H](C(=O)[O-])[C@@H]1O
 C00002,C1=NC(=C2C(=N1)N(C=N2)[C@H]3[C@@H]([C@@H]([C@H](O3)COP(=O)([O-])OP(=O)([O-])OP(=O)([O-])[O-])O)O)N
@@ -524,14 +524,14 @@ with FileLock(lock_file, timeout=60):
 **With index:**
 - Pre-computed canonical forms
 - O(1) hash lookup
-- Stored in `CBRdb_CanonicalIndex.csv`
+- Stored in `Compound_DatabaseanonicalIndex.csv`
 ---
 
 ## Input Requirements
 
 ### Required Files
 
-#### 1. `CBRdb_R.csv`
+#### 1. `Reaction_Database.csv`
 **Columns:**
 - `id`: Reaction identifier (e.g., "R00001")
 - `reaction`: Equation with compound IDs (e.g., "C00031 + C00002 <=> C00668 + C00008")
@@ -541,13 +541,13 @@ with FileLock(lock_file, timeout=60):
 - Can include coefficients (2, n, m+1, etc.)
 - Use `+` to separate multiple compounds
 
-#### 2. `CBRdb_C.csv`
+#### 2. `Compound_Database.csv`
 **Columns:**
 - `compound_id`: Unique identifier (e.g., "C00031")
 - `smiles`: Chemical structure in SMILES notation
 
 **Requirements:**
-- Every compound in `CBRdb_R.csv` must have an entry
+- Every compound in `Reaction_Database.csv` must have an entry
 - SMILES can contain multiple fragments (dot-separated)
 - SMILES should be valid RDKit-parseable format
 
@@ -563,7 +563,7 @@ The code tries to find the files in:
 ### Required Arguments
 
 #### `--row_index` (integer)
-Specifies which row (0-indexed) from `CBRdb_R.csv` to process
+Specifies which row (0-indexed) from `Reaction_Database.csv` to process
 
 **Example:**
 ```bash
@@ -853,7 +853,7 @@ Alanine: C[C@H](N)C(=O)O
 python AtomTracking_Enhanced.py --row_index 0
 ```
 
-**Input (CBRdb_R.csv, row 0):**
+**Input (Reaction_Database.csv, row 0):**
 ```
 id,reaction
 R00001,C00031 + C00002 <=> C00668 + C00008 + C00009
@@ -1022,7 +1022,7 @@ cofactor_handling: both
 ### Common Issues
 
 #### Issue 1: "File not found"
-**Error:** `FileNotFoundError: CBRdb_R.csv not found`
+**Error:** `FileNotFoundError: Reaction_Database.csv not found`
 
 **Solution:**
 - Ensure CSV files are in the same directory as script
@@ -1037,7 +1037,7 @@ cofactor_handling: both
 ```python
 # Check how many reactions exist
 import pandas as pd
-df = pd.read_csv('CBRdb_R.csv')
+df = pd.read_csv('Reaction_Database.csv')
 print(f"Total reactions: {len(df)}")
 print(f"Valid indices: 0 to {len(df)-1}")
 ```
@@ -1061,7 +1061,7 @@ pip install localmapper
 **Debug steps:**
 1. Use `--visualize` to inspect atom mapping
 2. Check if `mapped_rxns` output has numbers
-3. Verify products are in `CBRdb_C.csv`
+3. Verify products are in `Compound_Database.csv`
 ---
 
 #### Issue 5: "Dynamic filtering skipped"
@@ -1087,6 +1087,7 @@ After removal: (empty) <=> B  ✗ (SKIPPED)
 - **RDKit:** Open-source cheminformatics toolkit
 - **RXNMapper:** Schwaller, P., et al. (2021). "Extraction of organic chemistry grammar from unsupervised learning of chemical reactions"
 - **localmapper:** Shuan, Chen, et al. (2024). "Precise atom-to-atom mapping for organic reactions via human-in-the-loop machine learning"
+
 
 
 
