@@ -64,7 +64,7 @@ It uses **two different atom mapping tools**:
 ├─────────────────────────────────────────────────────────────┤
 │ • Remove stoichiometric coefficients (2, n, m+1, etc.)      │
 │ • Build canonical SMILES index for fast lookup              │
-│ • Parse reaction sides (substrates ⇄ products)		      	  │
+│ • Parse reaction sides (substrates ⇄ products)             | 
 └─────────────────────────────────────────────────────────────┘
                            ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -1087,6 +1087,7 @@ After removal: (empty) <=> B  ✗ (SKIPPED)
 - **RDKit:** Open-source cheminformatics toolkit
 - **RXNMapper:** Schwaller, P., et al. (2021). "Extraction of organic chemistry grammar from unsupervised learning of chemical reactions"
 - **localmapper:** Shuan, Chen, et al. (2024). "Precise atom-to-atom mapping for organic reactions via human-in-the-loop machine learning"
+
 
 
 
