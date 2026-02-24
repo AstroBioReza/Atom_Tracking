@@ -1092,7 +1092,8 @@ After removal: (empty) <=> B  ✗ (SKIPPED)
 
 ## How to Cite
 
-AstroBioReza, Atom_Tracking, GitHub, 2025, https://github.com/AstroBioReza/Atom_Tracking
+M. Reza Shahjahan, Atom_Tracking, GitHub, 2025, https://github.com/AstroBioReza/Atom_Tracking
+
 
 
 
