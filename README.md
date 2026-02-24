@@ -12,6 +12,7 @@
 9. [Error Handling](#error-handling)
 10. [Technical Details](#technical-details)
 11. [Usage Examples](#usage-examples)
+12. [How to cite](#how-to-cite)
 
 ---
 ## Overview
@@ -1089,6 +1090,9 @@ After removal: (empty) <=> B  ✗ (SKIPPED)
 - **localmapper:** Shuan, Chen, et al. (2024). "Precise atom-to-atom mapping for organic reactions via human-in-the-loop machine learning"
 
 
+## How to Cite
+
+AstroBioReza, Atom_Tracking, GitHub, 2025, https://github.com/AstroBioReza/Atom_Tracking
 
 
 
