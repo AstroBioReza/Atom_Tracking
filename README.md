@@ -1,6 +1,5 @@
-![Uploading image.png…]()
+<img width="800" height="400" alt="CRATS LOGO" src="https://github.com/user-attachments/assets/ee30408b-430b-4850-a35a-cc2c71245608" />
 
-# CRATS (Chemical Reaction Atom Tracking System) - Complete Guide
 
 ## Table of Contents
 1. [Overview](#overview)
