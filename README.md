@@ -1,5 +1,5 @@
-<img width="800" height="400" alt="CRATS LOGO" src="https://github.com/user-attachments/assets/e70ccef9-7e2a-4b1c-bf29-f8a5eb879c3f" />
-<img width="800" height="400" alt="CRATS LOGO-PNG" src="https://github.com/user-attachments/assets/feb2d9ad-e748-4f84-98e0-a0b1139d91eb" />
+<img width="600" height="450" alt="CRATS LOGO" src="https://github.com/user-attachments/assets/f1a6df74-820b-45a6-a508-22aaaea18157" />
+
 
 ## Table of Contents
 1. [Overview](#overview)
